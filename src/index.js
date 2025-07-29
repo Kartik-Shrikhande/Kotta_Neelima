@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/gallery', galleryRoutes);
-mongoose.set('bufferCommands', false);
+// mongoose.set('bufferCommands', false);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {

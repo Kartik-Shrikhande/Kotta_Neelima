@@ -1,7 +1,7 @@
 const Gallery = require('../model/galleryModel');
 const { uploadToS3 } = require('../utility/awsS3');
 
-// Create
+
 exports.createGallery = async (req, res) => {
   try {
     const { title, teluguTitle, hindiTitle, date, time } = req.body;
@@ -22,7 +22,6 @@ exports.createGallery = async (req, res) => {
     });
 
     await newGallery.save();
-
     res.status(201).json({ success: true, gallery: newGallery });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
