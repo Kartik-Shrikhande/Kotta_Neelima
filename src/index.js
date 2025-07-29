@@ -21,8 +21,8 @@ app.use('/api/gallery', galleryRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {
-  connectTimeoutMS: 60000,
-  socketTimeoutMS: 60000,
+  connectTimeoutMS: 100000,
+  socketTimeoutMS: 100000,
 })
 .then(() => console.log('✅ MongoDB connected'))
 .catch((error) => console.error('❌ MongoDB connection error:', error));
