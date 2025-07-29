@@ -1,5 +1,7 @@
 const Gallery = require('../model/galleryModel');
 const { uploadToS3 } = require('../utility/awsS3');
+const mongoose= require('mongoose');
+
 exports.createGallery = async (req, res) => {
   try {
     const { title, teluguTitle, hindiTitle, date, time } = req.body;
@@ -49,8 +51,9 @@ exports.getAllGallery = async (req, res) => {
 exports.getGalleryById = async (req, res) => {
   try {
     const gallery = await Gallery.findById(req.params.id);
+    
     if (!gallery) {
-      return res.status(404).json({ success: false, message: 'Not found' });
+      return res.status(404).json({ success: false, message: 'post Not found' });
     }
     res.json({ success: true, gallery });
   } catch (error) {
@@ -61,36 +64,74 @@ exports.getGalleryById = async (req, res) => {
 // Update
 exports.updateGallery = async (req, res) => {
   try {
+
+
+    const galleryId = req.params.id;
+
+   if (!mongoose.Types.ObjectId.isValid(galleryId)) {
+      return res.status(400).json({ success: false, message: 'Invalid Post ID' });
+    }
+
+
     const { title, teluguTitle, hindiTitle, date, time } = req.body;
-    const gallery = await Gallery.findById(req.params.id);
 
+ if (
+      (!req.body || Object.keys(req.body).length === 0) &&
+      !req.file
+    ) {
+      return res.status(400).json({ success: false, message: 'Request body is empty' });
+    }
+
+    const gallery = await Gallery.findById(galleryId);
     if (!gallery) {
-      return res.status(404).json({ success: false, message: 'Not found' });
+      return res.status(404).json({ success: false, message: 'Post not found' });
     }
 
+    // If new image uploaded, replace it
     if (req.file) {
-      gallery.image = await uploadToS3(req.file);
+      const newImageUrl = await uploadToS3(req.file);
+      gallery.image = newImageUrl;
     }
+
+    // Set current time if not provided
+    const currentTime = new Date().toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Kolkata',
+    });
 
     gallery.title = title || gallery.title;
     gallery.teluguTitle = teluguTitle || gallery.teluguTitle;
     gallery.hindiTitle = hindiTitle || gallery.hindiTitle;
     gallery.date = date || gallery.date;
-    gallery.time = time || gallery.time;
+    gallery.time = time || currentTime;
 
     await gallery.save();
+
     res.json({ success: true, gallery });
   } catch (error) {
+    console.error('Update error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 };
 
 // Delete
 exports.deleteGallery = async (req, res) => {
+  
   try {
-    const gallery = await Gallery.findByIdAndDelete(req.params.id);
+
+     const galleryId = req.params.id;
+
+         if (!mongoose.Types.ObjectId.isValid(galleryId)) {
+      return res.status(400).json({ success: false, message: 'Invalid Post ID' });
+    }
+    
+    const gallery = await Gallery.findByIdAndDelete(galleryId);
+
+
     if (!gallery) {
-      return res.status(404).json({ success: false, message: 'Not found' });
+      return res.status(404).json({ success: false, message: 'Post Not found' });
     }
     res.json({ success: true, message: 'Deleted successfully' });
   } catch (error) {
