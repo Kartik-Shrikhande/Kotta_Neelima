@@ -1,7 +1,5 @@
 const Gallery = require('../model/galleryModel');
 const { uploadToS3 } = require('../utility/awsS3');
-
-
 exports.createGallery = async (req, res) => {
   try {
     const { title, teluguTitle, hindiTitle, date, time } = req.body;
@@ -12,13 +10,21 @@ exports.createGallery = async (req, res) => {
 
     const imageUrl = await uploadToS3(req.file);
 
+    // If time is not provided, use current time in HH:mm format
+    const currentTime = new Date().toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'Asia/Kolkata', // use your local timezone
+    });
+
     const newGallery = new Gallery({
       title,
       teluguTitle,
       hindiTitle,
       image: imageUrl,
       date,
-      time,
+      time: time || currentTime, // ⬅️ fallback to current time if not provided
     });
 
     await newGallery.save();
@@ -27,6 +33,7 @@ exports.createGallery = async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
 
 // Get all
 exports.getAllGallery = async (req, res) => {
