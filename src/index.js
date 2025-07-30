@@ -7,6 +7,8 @@ const http = require('http');
 // Route imports
 const galleryRoutes = require('./routes/galleryRoutes'); // Adjusted path
 const adminRoutes = require('./routes/adminRoutes');     // Adjusted path
+const mediaRoutes = require('./routes/mediaRoutes');
+
 
 const app = express();
 const server = http.createServer(app);
@@ -18,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/gallery', galleryRoutes);
-// mongoose.set('bufferCommands', false);
+app.use('/api/media', mediaRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {
