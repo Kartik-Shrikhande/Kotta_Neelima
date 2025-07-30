@@ -91,7 +91,7 @@ exports.getAllMedia = async (req, res) => {
       })
     );
 
-    res.json({ success: true, media: enrichedMedia });
+    res.json({ success: true,total:enrichedMedia.length, media: enrichedMedia });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
