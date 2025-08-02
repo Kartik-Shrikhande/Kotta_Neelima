@@ -35,7 +35,7 @@ res.cookie('refreshtoken', token, {
 res.status(200).json({
   success: true,
   role: admin.role,
-  toke:token,
+  token:token,
   message: 'Login successful',
   admin: {
     id: admin._id,
