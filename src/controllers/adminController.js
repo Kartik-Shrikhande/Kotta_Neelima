@@ -20,16 +20,29 @@ exports.loginAdmin = async (req, res) => {
       return res.status(401).json({ message: 'Invalid credentials.' });
     }
 
+    
     const token = admin.generateJWT();
+admin.currentToken = token;        
+await admin.save();                
 
-    res.status(200).json({
-      success: true,
-      token,
-      admin: {
-        id: admin._id,
-        email: admin.email,
-      }
-    });
+res.cookie('refreshtoken', token, {
+  httpOnly: true,
+  secure: true, // set to false in dev
+  sameSite: 'None', // or 'Lax' depending on use case
+  maxAge: 604800000 
+});
+
+res.status(200).json({
+  success: true,
+  role: admin.role,
+  toke:token,
+  message: 'Login successful',
+  admin: {
+    id: admin._id,
+    email: admin.email,
+  }
+});
+
   } catch (error) {
     console.error('Admin login error:', error);
     res.status(500).json({ message: 'Server error' });

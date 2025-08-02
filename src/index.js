@@ -3,11 +3,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const http = require('http');
+const cookieParser = require('cookie-parser');
+
+
 
 // Route imports
 const galleryRoutes = require('./routes/galleryRoutes'); // Adjusted path
 const adminRoutes = require('./routes/adminRoutes');     // Adjusted path
 const mediaRoutes = require('./routes/mediaRoutes');
+const pressRoutes = require('./routes/pressRoutes');
+const resetPasswordRoutes = require('./routes/resetPasswordRoute'); // Adjusted path
+
+// Initialize express app 
+
 
 
 const app = express();
@@ -17,10 +25,19 @@ const server = http.createServer(app);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+//current in use
+// const allowedOrigins = [
+//     "http://localhost:5173",
+//     "https://connect2-uni.vercel.app",
+
+// ];
 // API Routes
 app.use('/api/admin', adminRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/media', mediaRoutes);
+app.use('/api/press', pressRoutes);
+app.use('/api/password', resetPasswordRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {
