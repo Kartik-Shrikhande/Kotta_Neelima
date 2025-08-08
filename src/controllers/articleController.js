@@ -1,16 +1,22 @@
-const Article = require('../model/articleModel');
 const mongoose = require('mongoose');
-
-// 🔸 CREATE
+const Article = require('../model/articleModel');
 const { uploadToS3 } = require('../utility/awsS3');
 
+// 🔸 CREATE
 exports.createArticle = async (req, res) => {
   try {
     const { date, title, description, url } = req.body;
-    let pdfUrl = null;
 
+    // ✅ Field validation
+    if (!title || !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'Title and description are required fields.',
+      });
+    }
+
+    let pdfUrl = null;
     if (req.file) {
-      // Upload manually to S3
       pdfUrl = await uploadToS3(req.file);
     }
 
@@ -35,8 +41,9 @@ exports.createArticle = async (req, res) => {
 exports.getAllArticles = async (req, res) => {
   try {
     const articles = await Article.find().sort({ createdAt: -1 });
-    res.status(200).json({total:articles.length,data:articles});
+    res.status(200).json({ total: articles.length, data: articles });
   } catch (err) {
+    console.error('Error fetching articles:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };
@@ -45,16 +52,28 @@ exports.getAllArticles = async (req, res) => {
 exports.updateArticle = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id))
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'Invalid Article ID' });
+    }
 
     const { date, title, description, url } = req.body;
 
-    const updatedFields = { date, title, description, url };
+    // ✅ Field validation
+    if (title === '' || description === '') {
+      return res.status(400).json({
+        success: false,
+        message: 'Title and description cannot be empty.',
+      });
+    }
 
-    // If PDF uploaded, send to S3 and add URL
+    const updatedFields = {};
+    if (date) updatedFields.date = date;
+    if (title) updatedFields.title = title;
+    if (description) updatedFields.description = description;
+    if (url) updatedFields.url = url;
+
     if (req.file) {
-      const pdfUrl = await uploadToS3(req.file); // <- manually upload using your service
+      const pdfUrl = await uploadToS3(req.file);
       updatedFields.pdf = pdfUrl;
     }
 
@@ -69,18 +88,21 @@ exports.updateArticle = async (req, res) => {
   }
 };
 
+
 // 🔸 DELETE
 exports.deleteArticle = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id))
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ message: 'Invalid Article ID' });
+    }
 
     const deleted = await Article.findByIdAndDelete(id);
     if (!deleted) return res.status(404).json({ message: 'Article not found' });
 
     res.status(200).json({ message: 'Article deleted successfully' });
   } catch (err) {
+    console.error('Error deleting article:', err);
     res.status(500).json({ message: 'Server error' });
   }
 };

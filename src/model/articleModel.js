@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const articleSchema = new mongoose.Schema({
   date: {
     type: String,
-    required: true,
   },
   title: {
     type: String,
@@ -11,7 +10,7 @@ const articleSchema = new mongoose.Schema({
   },
   description: {
     type: String,
-    // required: true,
+    required: true,
   },
   pdf: {
     type: String, // S3 URL or local path
