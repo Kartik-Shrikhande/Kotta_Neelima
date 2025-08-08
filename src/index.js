@@ -12,6 +12,7 @@ const galleryRoutes = require('./routes/galleryRoutes'); // Adjusted path
 const adminRoutes = require('./routes/adminRoutes');     // Adjusted path
 const mediaRoutes = require('./routes/mediaRoutes');
 const pressRoutes = require('./routes/pressRoutes');
+const articleRoutes = require('./routes/articleRoutes'); // Adjusted pat
 const resetPasswordRoutes = require('./routes/resetPasswordRoute'); // Adjusted path
 
 // Initialize express app 
@@ -37,6 +38,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/press', pressRoutes);
+app.use('/api/article', articleRoutes);
 app.use('/api/password', resetPasswordRoutes);
 
 // MongoDB Connection
