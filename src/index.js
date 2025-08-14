@@ -14,7 +14,7 @@ const mediaRoutes = require('./routes/mediaRoutes');
 const pressRoutes = require('./routes/pressRoutes');
 const articleRoutes = require('./routes/articleRoutes'); // Adjusted pat
 const resetPasswordRoutes = require('./routes/resetPasswordRoute'); // Adjusted path
-
+const hakkuRoutes = require('./routes/hakkuRoutes'); // Adjusted path
 // Initialize express app 
 
 
@@ -40,6 +40,7 @@ app.use('/api/media', mediaRoutes);
 app.use('/api/press', pressRoutes);
 app.use('/api/article', articleRoutes);
 app.use('/api/password', resetPasswordRoutes);
+app.use('/api/hakku', hakkuRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {
