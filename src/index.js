@@ -15,7 +15,6 @@ const pressRoutes = require('./routes/pressRoutes');
 const articleRoutes = require('./routes/articleRoutes'); // Adjusted pat
 const resetPasswordRoutes = require('./routes/resetPasswordRoute'); // Adjusted path
 const hakkuRoutes = require('./routes/hakkuRoutes'); // Adjusted path
-const pressReleaseRoutes = require('./routes/pressReleaseRoutes'); // Adjusted path
 // Initialize express app 
 
 
@@ -42,7 +41,6 @@ app.use('/api/press', pressRoutes);
 app.use('/api/article', articleRoutes);
 app.use('/api/password', resetPasswordRoutes);
 app.use('/api/hakku', hakkuRoutes);
-app.use('/api/press-release', pressReleaseRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {
