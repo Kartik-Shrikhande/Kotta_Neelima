@@ -1,4 +1,4 @@
-const Media = require('../model/mediaModel');
+const Media = require('../models/mediaModel');
 const axios = require('axios');
 const mongoose= require('mongoose');
 

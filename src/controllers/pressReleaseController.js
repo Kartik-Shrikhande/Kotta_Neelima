@@ -1,4 +1,4 @@
-const PressRelease = require('../model/pressReleaseModel');
+const PressRelease = require('../models/pressReleaseModel');
 const mongoose = require('mongoose');
 
 // CREATE

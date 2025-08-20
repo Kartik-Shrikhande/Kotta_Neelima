@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authenticationMiddleware = require('../middleware/authenticationMiddleware');
+const homepageGalleryController = require("../controllers/homepageGalleryController");
+
 
 const {
   loginAdmin,
@@ -16,6 +18,12 @@ router.get('/dashboard',getDashboard);
 // 🔹 Verify Token Route (Checks if access token is valid)
 router.post('/refresh-token', authenticationMiddleware.refreshToken);
 router.post('/verify-token', authenticationMiddleware.verifyToken);
+
+
+
+//GALLERY HOMEPAGE ROUTES
+router.post("/set", homepageGalleryController.setHomepageGallery);
+router.get("/get", homepageGalleryController.getHomepageGallery);
 
 module.exports = router;
 

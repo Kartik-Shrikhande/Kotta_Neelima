@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const Admin = require('../model/adminModel');
+const Admin = require('../models/adminModel');
 const nodemailer = require('nodemailer');
 const bcrypt = require('bcrypt');
 

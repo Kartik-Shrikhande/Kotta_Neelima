@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Contact = require('../model/contactModel');
+const Contact = require('../models/contactModel');
 
 // Create
 exports.createContact = async (req, res) => {

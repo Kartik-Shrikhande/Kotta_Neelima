@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Article = require('../model/articleModel');
+const Article = require('../models/articleModel');
 const { uploadToS3 } = require('../utility/awsS3');
 
 // 🔸 CREATE

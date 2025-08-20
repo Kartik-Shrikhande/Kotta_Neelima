@@ -1,4 +1,4 @@
-const Press = require('../model/pressModel');
+const Press = require('../models/pressModel');
 const { uploadToS3 } = require('../utility/awsS3');
 const mongoose = require('mongoose');
 

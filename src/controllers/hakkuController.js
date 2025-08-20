@@ -1,4 +1,4 @@
-const Hakku = require('../model/hakkuInitiativeModel');
+const Hakku = require('../models/hakkuInitiativeModel');
 const axios = require('axios');
 const mongoose = require('mongoose');
 

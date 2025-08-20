@@ -1,4 +1,4 @@
-const Gallery = require('../model/galleryModel');
+const Gallery = require('../models/galleryModel');
 const { uploadToS3 } = require('../utility/awsS3');
 const mongoose= require('mongoose');
 

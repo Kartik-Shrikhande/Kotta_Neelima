@@ -1,4 +1,4 @@
-const PressCoverage = require('../model/pressCoverageModel');
+const PressCoverage = require('../models/pressCoverageModel');
 const mongoose = require('mongoose');
 
 

@@ -1,4 +1,4 @@
-const Admin = require('../model/adminModel');
+const Admin = require('../models/adminModel');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
 // ✅ Admin Login Controller
