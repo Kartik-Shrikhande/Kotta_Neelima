@@ -1,5 +1,9 @@
 const Gallery = require('../models/galleryModel');
-const { uploadToS3 } = require('../utility/awsS3');
+const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+// 2️⃣ Download All Images as ZIP
+const axios = require("axios");
+const JSZip = require("jszip");
+const archiver = require('archiver');
 const mongoose= require('mongoose');
 
 exports.createGallery = async (req, res) => {
@@ -136,5 +140,104 @@ exports.deleteGallery = async (req, res) => {
     res.json({ success: true, message: 'Deleted successfully' });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+
+//////////////////////////////////////////////////
+
+
+
+// Initialize S3 client
+const s3 = new S3Client({
+  region: process.env.AWS_REGION,
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+});
+
+// 1️⃣ Single Image Download (pre-signed URL)
+// GET /api/gallery/download/:id
+
+exports.downloadSingleImage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const imageDoc = await Gallery.findById(id);
+
+    if (!imageDoc) {
+      return res.status(404).json({ success: false, message: "Image not found" });
+    }
+
+    // Extract filename from URL
+    const fileName = imageDoc.image.split("/").pop();
+
+    // Fetch file from S3
+    const response = await axios({
+      url: imageDoc.image,
+      method: "GET",
+      responseType: "stream"
+    });
+
+    // Set download headers
+    res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    res.setHeader("Content-Type", response.headers["content-type"]);
+
+    // Pipe file to response
+    response.data.pipe(res);
+
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+
+// exports.downloadSingleImage = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const imageDoc = await Gallery.findById(id);
+
+//     if (!imageDoc) {
+//       return res.status(404).json({ success: false, message: "Image not found" });
+//     }
+
+//     // Send the file as a download
+//     res.redirect(imageDoc.image); // Redirects directly to the S3 URL
+//   } catch (err) {
+//     res.status(500).json({ success: false, error: err.message });
+//   }
+// };
+
+
+
+
+exports.downloadAllImages = async (req, res) => {
+  try {
+    const images = await Gallery.find();
+
+    if (!images.length) {
+      return res.status(404).json({ success: false, message: "No images found" });
+    }
+
+    const zip = new JSZip();
+
+    // Fetch each image and add to zip
+    for (let i = 0; i < images.length; i++) {
+      const response = await axios.get(images[i].image, { responseType: "arraybuffer" });
+      const imgBuffer = Buffer.from(response.data, "binary");
+
+      // Add image with original filename (or index)
+      const fileName = `image_${i + 1}.jpg`;
+      zip.file(fileName, imgBuffer);
+    }
+
+    // Generate zip
+    const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
+
+    res.set("Content-Type", "application/zip");
+    res.set("Content-Disposition", "attachment; filename=gallery_images.zip");
+    res.send(zipBuffer);
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 };
