@@ -1,5 +1,6 @@
 const Gallery = require('../models/galleryModel');
 const { S3Client, GetObjectCommand } = require("@aws-sdk/client-s3");
+const { uploadToS3 } = require('../utility/awsS3');
 // 2️⃣ Download All Images as ZIP
 const axios = require("axios");
 const JSZip = require("jszip");
