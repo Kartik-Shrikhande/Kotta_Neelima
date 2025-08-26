@@ -16,6 +16,11 @@ const articleRoutes = require('./routes/articleRoutes'); // Adjusted pat
 const resetPasswordRoutes = require('./routes/resetPasswordRoute'); // Adjusted path
 const hakkuRoutes = require('./routes/hakkuRoutes'); // Adjusted path
 const contactRoutes = require('./routes/contactRoutes');
+const proposalRoutes = require('./routes/policyInterventionProposalRoutes');
+const nationalPoliticsRoutes = require('./routes/nationalPoliticsRoutes');
+
+
+
 
 // Initialize express app 
 
@@ -44,6 +49,8 @@ app.use('/api/article', articleRoutes);
 app.use('/api/password', resetPasswordRoutes);
 app.use('/api/hakku', hakkuRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/proposals', proposalRoutes);
+app.use('/api/national-politics', nationalPoliticsRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {
