@@ -18,7 +18,7 @@ const hakkuRoutes = require('./routes/hakkuRoutes'); // Adjusted path
 const contactRoutes = require('./routes/contactRoutes');
 const proposalRoutes = require('./routes/policyInterventionProposalRoutes');
 const nationalPoliticsRoutes = require('./routes/nationalPoliticsRoutes');
-
+const nationalPoliticsGallery = require('./routes/nationalPoliticsGalleryRoutes');
 
 
 
@@ -51,7 +51,7 @@ app.use('/api/hakku', hakkuRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/proposals', proposalRoutes);
 app.use('/api/national-politics', nationalPoliticsRoutes);
-
+app.use('/api/national-politics-gallery',nationalPoliticsGallery);
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {
   connectTimeoutMS: 100000,
