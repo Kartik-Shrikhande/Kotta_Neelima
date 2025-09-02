@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
+const authenticationMiddleware = require('../middleware/authenticationMiddleware');
 
 const {
   createCategory,
@@ -16,6 +17,10 @@ const {
   updateGalleryPost
 } = require('../controllers/nationalPoliticsGalleryController');
 
+
+router.get('/gallery', getGalleryPosts);
+
+router.use(authenticationMiddleware.authenticateUser,authenticationMiddleware.authorizeRoles(['admin']))
 // Category Routes
 router.post('/categories', createCategory);
 router.get('/categories', getCategories);
@@ -23,7 +28,6 @@ router.delete('/categories/:id', deleteCategory);
 
 // Gallery Routes
 router.post('/gallery', upload.single('image'), createGalleryPost);
-router.get('/gallery', getGalleryPosts);
 router.delete('/gallery/:id', deleteGalleryPost);
 router.put('/gallery/:id', upload.single("image"),updateGalleryPost);
 
