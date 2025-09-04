@@ -27,7 +27,7 @@ exports.authenticateUser = (req, res, next) => {
 
     next(); // Proceed to the next middleware
   } catch (error) {
-  console.error("Token verification failed:", error);
+  // console.error("Token verification failed:", error);
 
   if (error.name === 'TokenExpiredError') {
     return res.status(401).json({ message: 'Token has expired. Please log in again.' });
