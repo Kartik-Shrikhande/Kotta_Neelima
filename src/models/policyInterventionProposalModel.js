@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 
 const policyInterventionProposalSchema = new mongoose.Schema({
-  description: {
+  title: {
     type: String,
     required: true,
   },
