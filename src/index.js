@@ -20,7 +20,7 @@ const proposalRoutes = require('./routes/policyInterventionProposalRoutes');
 const nationalPoliticsRoutes = require('./routes/nationalPoliticsRoutes');
 const nationalPoliticsGallery = require('./routes/nationalPoliticsGalleryRoutes');
 const todayEvent = require('./routes/todayEventRoutes');
-
+const journalismRoutes = require('./routes/journalismRoutes');
 
 // Initialize express app 
 
@@ -53,6 +53,10 @@ app.use('/api/proposals', proposalRoutes);
 app.use('/api/national-politics', nationalPoliticsRoutes);
 app.use('/api/national-politics-gallery',nationalPoliticsGallery);
 app.use('/api/todayEvent',todayEvent);
+app.use('/api/journalism', journalismRoutes);
+
+
+
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {
   connectTimeoutMS: 100000,

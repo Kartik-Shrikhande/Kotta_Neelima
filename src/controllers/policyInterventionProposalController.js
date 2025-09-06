@@ -5,12 +5,12 @@ const PolicyInterventionProposal = require('../models/policyInterventionProposal
 // ✅ Create
 exports.createProposal = async (req, res) => {
   try {
-    const { description } = req.body;
-    if (!description) {
-      return res.status(400).json({ success: false, message: "Description is required" });
+    const { title, description, url } = req.body;
+    if (!title || !description || !url) {
+      return res.status(400).json({ success: false, message: "Title, description, and URL are required" });
     }
 
-    const proposal = new PolicyInterventionProposal({ description });
+    const proposal = new PolicyInterventionProposal({ title, description, url });
     await proposal.save();
 
     res.status(201).json({ success: true, message: "Created successfully", data: proposal });
@@ -23,7 +23,7 @@ exports.createProposal = async (req, res) => {
 exports.getAllProposals = async (req, res) => {
   try {
     const proposals = await PolicyInterventionProposal.find();
-    res.status(200).json({ total:proposals.length,success: true, data: proposals });
+    res.status(200).json({ total: proposals.length, success: true, data: proposals });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
@@ -52,18 +52,18 @@ exports.getProposalById = async (req, res) => {
 exports.updateProposal = async (req, res) => {
   try {
     const { id } = req.params;
-    const { description } = req.body;
+    const { title, description, url } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: "Invalid ID format" });
     }
-    if (!description) {
-      return res.status(400).json({ success: false, message: "Description is required" });
+    if (!title || !description || !url) {
+      return res.status(400).json({ success: false, message: "Title, description, and URL are required" });
     }
 
     const proposal = await PolicyInterventionProposal.findByIdAndUpdate(
       id,
-      { description },
+      { title, description, url },
       { new: true, runValidators: true }
     );
 
