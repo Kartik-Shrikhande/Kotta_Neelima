@@ -21,7 +21,7 @@ const nationalPoliticsRoutes = require('./routes/nationalPoliticsRoutes');
 const nationalPoliticsGallery = require('./routes/nationalPoliticsGalleryRoutes');
 const todayEvent = require('./routes/todayEventRoutes');
 const journalismRoutes = require('./routes/journalismRoutes');
-
+const ruralDistressRoutes = require('./routes/ruralDistressRoutes');
 // Initialize express app 
 
 
@@ -54,7 +54,7 @@ app.use('/api/national-politics', nationalPoliticsRoutes);
 app.use('/api/national-politics-gallery',nationalPoliticsGallery);
 app.use('/api/todayEvent',todayEvent);
 app.use('/api/journalism', journalismRoutes);
-
+app.use('/api/rural-distress', ruralDistressRoutes);
 
 
 // MongoDB Connection
