@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const RuralDistress = require('../models/ruralDistressModel');
+const RuralDistressPhoto = require('../models/ruralDistressPhotoModel');
+const { uploadToS3 } = require('../utility/awsS3');
 
+
+//RURAL DISTRESS CONTROLLER
 // ✅ Create
 exports.createRuralDistress = async (req, res) => {
   try {
@@ -91,6 +95,120 @@ exports.deleteRuralDistress = async (req, res) => {
     const distress = await RuralDistress.findByIdAndDelete(id);
     if (!distress) {
       return res.status(404).json({ success: false, message: 'Rural Distress entry not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+
+
+
+//RURAL DISTRESS PHOTO CONTROLLER
+
+// ✅ Create Photo
+exports.createRuralDistressPhoto = async (req, res) => {
+  try {
+    const { title } = req.body;
+
+    if (!title) {
+      return res.status(400).json({ success: false, message: 'Title is required' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'Image is required' });
+    }
+
+    const imageUrl = await uploadToS3(req.file);
+
+    const photo = new RuralDistressPhoto({ title, image: imageUrl });
+    await photo.save();
+
+    res.status(201).json({ success: true, message: 'Photo created successfully', data: photo });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// ✅ Get All Photos
+exports.getAllRuralDistressPhotos = async (req, res) => {
+  try {
+    const photos = await RuralDistressPhoto.find().sort({ createdAt: -1 });
+    res.status(200).json({ total: photos.length, success: true, data: photos });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// // ✅ Get Photo by ID
+// exports.getRuralDistressPhotoById = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       return res.status(400).json({ success: false, message: 'Invalid ID format' });
+//     }
+
+//     const photo = await RuralDistressPhoto.findById(id);
+//     if (!photo) {
+//       return res.status(404).json({ success: false, message: 'Photo not found' });
+//     }
+
+//     res.status(200).json({ success: true, data: photo });
+//   } catch (err) {
+//     res.status(500).json({ success: false, error: err.message });
+//   }
+// };
+
+// ✅ Update Photo
+
+
+exports.updateRuralDistressPhoto = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid ID format' });
+    }
+
+    const updateData = {};
+    if (title) updateData.title = title;
+
+    if (req.file) {
+      const imageUrl = await uploadToS3(req.file);
+      updateData.image = imageUrl;
+    }
+
+    const photo = await RuralDistressPhoto.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!photo) {
+      return res.status(404).json({ success: false, message: 'Photo not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Updated successfully', data: photo });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// ✅ Delete Photo
+exports.deleteRuralDistressPhoto = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid ID format' });
+    }
+
+    const photo = await RuralDistressPhoto.findByIdAndDelete(id);
+    if (!photo) {
+      return res.status(404).json({ success: false, message: 'Photo not found' });
     }
 
     res.status(200).json({ success: true, message: 'Deleted successfully' });

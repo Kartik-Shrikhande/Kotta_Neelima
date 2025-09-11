@@ -1,25 +1,30 @@
 const express = require('express');
-const {
-  createRuralDistress,
-  getAllRuralDistress,
-  getRuralDistressById,
-  updateRuralDistress,
-  deleteRuralDistress
-} = require('../controllers/ruralDistressController');
+const ruralDistressController = require('../controllers/ruralDistressController');
 const authenticationMiddleware = require('../middleware/authenticationMiddleware');
-
+const multer = require('multer');
 const router = express.Router();
+const upload = multer({ storage: multer.memoryStorage() });
 
-router.get('/all', getAllRuralDistress);
+router.get('/all', ruralDistressController.getAllRuralDistress);
+router.get('/photos/all', ruralDistressController.getAllRuralDistressPhotos);
 
-// Routes for Rural Distress
-router.use(authenticationMiddleware.authenticateUser,authenticationMiddleware.authorizeRoles(['admin']))
-router.post('/create', createRuralDistress);
-// router.get('/:id', getRuralDistressById);
-router.put('/:id', updateRuralDistress);
-router.delete('/:id', deleteRuralDistress);
+// ✅ Protect the following routes for Admin only
+router.use(
+  authenticationMiddleware.authenticateUser,
+  authenticationMiddleware.authorizeRoles(['admin'])
+);
+
+router.post('/create', ruralDistressController.createRuralDistress);
+// router.get('/:id', ruralDistressController.getRuralDistressById);
+router.put('/:id', ruralDistressController.updateRuralDistress);
+router.delete('/:id', ruralDistressController.deleteRuralDistress);
 
 
 
+//RURAL DISTRESS PHOTO ROUTES
+router.post('/photos/create', upload.single('image'), ruralDistressController.createRuralDistressPhoto);
+// router.get('/photos/:id', getRuralDistressPhotoById);
+router.put('/photos/:id', upload.single('image'), ruralDistressController.updateRuralDistressPhoto);
+router.delete('/photos/:id', ruralDistressController.deleteRuralDistressPhoto);
 
 module.exports = router;
