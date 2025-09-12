@@ -12,6 +12,9 @@ const todayEventSchema = new mongoose.Schema(
     youtubeUrl: { type: String },
     articleUrl: { type: String },
     date: { type: String, required: true },
+    // ✅ New fields
+    status: { type: String, enum: ['active', 'inactive'], default: 'active' },
+    featured: { type: Boolean, default: false }
   },
   { timestamps: true }
 );
