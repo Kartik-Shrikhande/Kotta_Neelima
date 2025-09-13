@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const RuralDistress = require('../models/ruralDistressModel');
 const RuralDistressPhoto = require('../models/ruralDistressPhotoModel');
 const RuralConference = require('../models/ruralConferenceModel');
+const RuralBook = require('../models/ruralBookModel');
 const { uploadToS3 } = require('../utility/awsS3');
 
 
@@ -306,6 +307,103 @@ exports.deleteConference = async (req, res) => {
     }
 
     res.status(200).json({ success: true, message: 'Conference deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+
+
+//RURAL DISTRESS -BOOK CONTROLLER
+
+
+// 🔸 Create Book
+exports.createBook = async (req, res) => {
+  try {
+    const { title, description, publishedDate, author } = req.body;
+
+    if (!title || !description || !publishedDate || !author) {
+      return res.status(400).json({ success: false, message: 'All fields are required' });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'Book image is required' });
+    }
+
+    const imageUrl = await uploadToS3(req.file);
+
+    const book = await RuralBook.create({
+      bookImage: imageUrl,
+      title,
+      description,
+      publishedDate,
+      author
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Book created successfully',
+      data: book
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// 🔸 Get All Books
+exports.getAllBooks = async (req, res) => {
+  try {
+    const books = await RuralBook.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, total: books.length, data: books });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// 🔸 Update Book
+exports.updateBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid Book ID' });
+    }
+
+    const updateData = { ...req.body };
+
+    if (req.file) {
+      const imageUrl = await uploadToS3(req.file);
+      updateData.bookImage = imageUrl;
+    }
+
+    const updatedBook = await RuralBook.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true
+    });
+
+    if (!updatedBook) {
+      return res.status(404).json({ success: false, message: 'Book not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Book updated successfully', data: updatedBook });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// 🔸 Delete Book
+exports.deleteBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid Book ID' });
+    }
+
+    const deleted = await RuralBook.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: 'Book not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Book deleted successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
