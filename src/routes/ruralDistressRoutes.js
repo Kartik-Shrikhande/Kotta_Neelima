@@ -9,7 +9,7 @@ router.get('/all', ruralDistressController.getAllRuralDistress);
 router.get('/photos/all', ruralDistressController.getAllRuralDistressPhotos);
 router.get('/conferences/all', ruralDistressController.getAllConferences);
 router.get('/books/all', ruralDistressController.getAllBooks);
-
+router.get('/articles/all', ruralDistressController.getAllRuralDistressArticles);
 
 // ✅ Protect the following routes for Admin only
 router.use(
@@ -17,6 +17,8 @@ router.use(
   authenticationMiddleware.authorizeRoles(['admin'])
 );
 
+
+//RURAL DISTRESS ROUTES - RURAL SECTION
 router.post('/create', ruralDistressController.createRuralDistress);
 // router.get('/:id', ruralDistressController.getRuralDistressById);
 router.put('/:id', ruralDistressController.updateRuralDistress);
@@ -42,6 +44,13 @@ router.delete('/conferences/:id', ruralDistressController.deleteConference);
 router.post('/books/create', upload.single('bookImage'), ruralDistressController.createBook);
 router.put('/books/:id', upload.single('bookImage'), ruralDistressController.updateBook);
 router.delete('/books/:id', ruralDistressController.deleteBook);
+
+
+//RURAL DISTRESS ARTICLE ROUTES
+// router.get('/articles/:id', getRuralDistressArticleById);
+router.post('/article/create', ruralDistressController.createRuralDistressArticle);
+router.put('/article/:id', ruralDistressController.updateRuralDistressArticle);
+router.delete('/article/:id', ruralDistressController.deleteRuralDistressArticle);
 
 module.exports = router;
 

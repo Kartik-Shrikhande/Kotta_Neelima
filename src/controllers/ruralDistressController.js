@@ -3,6 +3,7 @@ const RuralDistress = require('../models/ruralDistressModel');
 const RuralDistressPhoto = require('../models/ruralDistressPhotoModel');
 const RuralConference = require('../models/ruralConferenceModel');
 const RuralBook = require('../models/ruralBookModel');
+const RuralDistressArticle = require('../models/ruralDistressArticleModel');
 const { uploadToS3 } = require('../utility/awsS3');
 
 
@@ -404,6 +405,88 @@ exports.deleteBook = async (req, res) => {
     }
 
     res.status(200).json({ success: true, message: 'Book deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+
+
+
+//RURAL DISTRESS -ARTICLE CONTROLLER
+
+// 🔸 Create Article
+exports.createRuralDistressArticle = async (req, res) => {
+  try {
+    const { title, url } = req.body;
+
+    if (!title || !url) {
+      return res.status(400).json({ success: false, message: 'Title and URL are required' });
+    }
+
+    const article = new RuralDistressArticle({ title, url });
+    await article.save();
+
+    res.status(201).json({ success: true, message: 'Article created successfully', data: article });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// 🔸 Get All Articles
+exports.getAllRuralDistressArticles = async (req, res) => {
+  try {
+    const articles = await RuralDistressArticle.find().sort({ createdAt: -1 });
+    res.status(200).json({ success: true, total: articles.length, data: articles });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// 🔸 Update Article
+exports.updateRuralDistressArticle = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, url } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid Article ID' });
+    }
+    if (!title || !url) {
+      return res.status(400).json({ success: false, message: 'Title and URL are required' });
+    }
+
+    const updated = await RuralDistressArticle.findByIdAndUpdate(
+      id,
+      { title, url },
+      { new: true, runValidators: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ success: false, message: 'Article not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Article updated successfully', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// 🔸 Delete Article
+exports.deleteRuralDistressArticle = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid Article ID' });
+    }
+
+    const deleted = await RuralDistressArticle.findByIdAndDelete(id);
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: 'Article not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Article deleted successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
