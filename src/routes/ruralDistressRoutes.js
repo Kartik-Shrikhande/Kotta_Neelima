@@ -7,6 +7,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 router.get('/all', ruralDistressController.getAllRuralDistress);
 router.get('/photos/all', ruralDistressController.getAllRuralDistressPhotos);
+router.get('/conferences/all', ruralDistressController.getAllConferences);
 
 // ✅ Protect the following routes for Admin only
 router.use(
@@ -26,5 +27,13 @@ router.post('/photos/create', upload.single('image'), ruralDistressController.cr
 // router.get('/photos/:id', getRuralDistressPhotoById);
 router.put('/photos/:id', upload.single('image'), ruralDistressController.updateRuralDistressPhoto);
 router.delete('/photos/:id', ruralDistressController.deleteRuralDistressPhoto);
+
+
+
+//RURAL DISTRESS -CONFERENCE ROUTES
+
+router.post('/conferences/create', ruralDistressController.createConference);
+router.put('/conferences/:id', ruralDistressController.updateConference);
+router.delete('/conferences/:id', ruralDistressController.deleteConference);
 
 module.exports = router;

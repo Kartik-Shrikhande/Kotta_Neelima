@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const RuralDistress = require('../models/ruralDistressModel');
 const RuralDistressPhoto = require('../models/ruralDistressPhotoModel');
+const RuralConference = require('../models/ruralConferenceModel');
 const { uploadToS3 } = require('../utility/awsS3');
 
 
@@ -212,6 +213,99 @@ exports.deleteRuralDistressPhoto = async (req, res) => {
     }
 
     res.status(200).json({ success: true, message: 'Deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+
+
+
+//RURAL DISTRESS -CONFERENCE CONTROLLER 
+
+
+
+// 🔸 Create Conference
+exports.createConference = async (req, res) => {
+  try {
+    const { description } = req.body;
+    if (!description) {
+      return res.status(400).json({ success: false, message: 'Description is required' });
+    }
+
+    const conference = await RuralConference.create({ description });
+
+    res.status(201).json({
+      success: true,
+      message: 'Conference created successfully',
+      data: conference
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// 🔸 Get All Conferences
+exports.getAllConferences = async (req, res) => {
+  try {
+    const conferences = await RuralConference.find().sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      total: conferences.length,
+      data: conferences
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// 🔸 Update Conference
+exports.updateConference = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { description } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid Conference ID' });
+    }
+
+    const updated = await RuralConference.findByIdAndUpdate(
+      id,
+      { description },
+      { new: true, runValidators: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ success: false, message: 'Conference not found' });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Conference updated successfully',
+      data: updated
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+// 🔸 Delete Conference
+exports.deleteConference = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid Conference ID' });
+    }
+
+    const deleted = await RuralConference.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({ success: false, message: 'Conference not found' });
+    }
+
+    res.status(200).json({ success: true, message: 'Conference deleted successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
