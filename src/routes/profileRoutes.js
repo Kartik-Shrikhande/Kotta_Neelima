@@ -24,7 +24,7 @@ router.get('/photos/download/:id', downloadProfilePhoto);
 router.use(authenticationMiddleware.authenticateUser, authenticationMiddleware.authorizeRoles(['admin']));
 
 // Bio CRUD
-router.post('/bio', upload.single('profileImage'), createProfileBio);
+router.post('/bio/create', upload.single('profileImage'), createProfileBio);
 router.put('/bio/:id', upload.single('profileImage'), updateProfileBio);
 router.delete('/bio/:id', deleteProfileBio);
 
