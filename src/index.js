@@ -56,7 +56,7 @@ app.use('/api/national-politics-gallery',nationalPoliticsGallery);
 app.use('/api/todayEvent',todayEvent);
 app.use('/api/journalism', journalismRoutes);
 app.use('/api/rural-distress', ruralDistressRoutes);
-app.use('/api/profile', profileRoutes);
+app.use('/profile', profileRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {
