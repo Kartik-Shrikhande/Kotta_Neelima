@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const ruralDistressArticleSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
-    url: { type: String, required: true }, // Will store uploaded file S3 URL
+    url: { type: String, required: true },
+    description: { type: String }, // 🔸 Added new field
   },
   { timestamps: true }
 );

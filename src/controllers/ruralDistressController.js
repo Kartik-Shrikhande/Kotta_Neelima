@@ -416,15 +416,16 @@ exports.deleteBook = async (req, res) => {
 //RURAL DISTRESS -ARTICLE CONTROLLER
 
 // 🔸 Create Article
+// 🔸 Create Article
 exports.createRuralDistressArticle = async (req, res) => {
   try {
-    const { title, url } = req.body;
+    const { title, url, description } = req.body;
 
     if (!title || !url) {
       return res.status(400).json({ success: false, message: 'Title and URL are required' });
     }
 
-    const article = new RuralDistressArticle({ title, url });
+    const article = new RuralDistressArticle({ title, url, description });
     await article.save();
 
     res.status(201).json({ success: true, message: 'Article created successfully', data: article });
@@ -447,7 +448,7 @@ exports.getAllRuralDistressArticles = async (req, res) => {
 exports.updateRuralDistressArticle = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, url } = req.body;
+    const { title, url, description } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: 'Invalid Article ID' });
@@ -458,7 +459,7 @@ exports.updateRuralDistressArticle = async (req, res) => {
 
     const updated = await RuralDistressArticle.findByIdAndUpdate(
       id,
-      { title, url },
+      { title, url, description },
       { new: true, runValidators: true }
     );
 
@@ -491,3 +492,4 @@ exports.deleteRuralDistressArticle = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
