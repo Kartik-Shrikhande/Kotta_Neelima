@@ -18,6 +18,9 @@ const pressSchema = new mongoose.Schema({
   date: {
     type: String, // e.g., "28-07-2025"
   },
+   url: {
+    type: String, // new field for press URL
+  },
   time: {
     type: String, // e.g., "12:00"
   }
