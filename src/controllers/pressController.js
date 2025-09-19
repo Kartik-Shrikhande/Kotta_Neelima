@@ -2,10 +2,11 @@ const Press = require('../models/pressModel');
 const { uploadToS3 } = require('../utility/awsS3');
 const mongoose = require('mongoose');
 
+
 // Create Press
 exports.createPress = async (req, res) => {
   try {
-    const { title, teluguTitle, hindiTitle, date, time } = req.body;
+    const { title, teluguTitle, hindiTitle, date, time, url } = req.body;
 
     if (!req.file) {
       return res.status(400).json({ message: 'Image file is required' });
@@ -25,6 +26,7 @@ exports.createPress = async (req, res) => {
       teluguTitle,
       hindiTitle,
       image: imageUrl,
+      url, // ✅ new field
       date,
       time: time || currentTime,
     });
@@ -70,7 +72,7 @@ exports.updatePress = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid Post ID' });
     }
 
-    const { title, teluguTitle, hindiTitle, date, time } = req.body;
+    const { title, teluguTitle, hindiTitle, date, time, url } = req.body;
 
     if ((!req.body || Object.keys(req.body).length === 0) && !req.file) {
       return res.status(400).json({ success: false, message: 'Request body is empty' });
@@ -98,6 +100,7 @@ exports.updatePress = async (req, res) => {
     press.hindiTitle = hindiTitle || press.hindiTitle;
     press.date = date || press.date;
     press.time = time || currentTime;
+    press.url = url || press.url; // ✅ update url
 
     await press.save();
 
