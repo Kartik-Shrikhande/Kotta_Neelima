@@ -11,13 +11,13 @@ const { uploadToS3 } = require('../utility/awsS3');
 // ✅ Create
 exports.createRuralDistress = async (req, res) => {
   try {
-    const { description } = req.body;
+    const { description, date } = req.body;
 
-    if (!description) {
-      return res.status(400).json({ success: false, message: 'Description is required' });
+    if (!description || !date) {
+      return res.status(400).json({ success: false, message: 'Description and Date are required' });
     }
 
-    const distress = new RuralDistress({ description });
+    const distress = new RuralDistress({ description, date });
     await distress.save();
 
     res.status(201).json({ success: true, message: 'Created successfully', data: distress });
@@ -25,6 +25,9 @@ exports.createRuralDistress = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+
+
 
 // ✅ Get All
 exports.getAllRuralDistress = async (req, res) => {
@@ -60,19 +63,19 @@ exports.getAllRuralDistress = async (req, res) => {
 exports.updateRuralDistress = async (req, res) => {
   try {
     const { id } = req.params;
-    const { description } = req.body;
+    const { description, date } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: 'Invalid ID format' });
     }
 
-    if (!description) {
-      return res.status(400).json({ success: false, message: 'Description is required' });
+    if (!description || !date) {
+      return res.status(400).json({ success: false, message: 'Description and Date are required' });
     }
 
     const distress = await RuralDistress.findByIdAndUpdate(
       id,
-      { description },
+      { description, date },
       { new: true, runValidators: true }
     );
 
@@ -114,10 +117,10 @@ exports.deleteRuralDistress = async (req, res) => {
 // ✅ Create Photo
 exports.createRuralDistressPhoto = async (req, res) => {
   try {
-    const { title } = req.body;
+    const { title, date } = req.body;
 
-    if (!title) {
-      return res.status(400).json({ success: false, message: 'Title is required' });
+    if (!title || !date) {
+      return res.status(400).json({ success: false, message: 'Title and Date are required' });
     }
 
     if (!req.file) {
@@ -125,8 +128,7 @@ exports.createRuralDistressPhoto = async (req, res) => {
     }
 
     const imageUrl = await uploadToS3(req.file);
-
-    const photo = new RuralDistressPhoto({ title, image: imageUrl });
+    const photo = new RuralDistressPhoto({ title, image: imageUrl, date });
     await photo.save();
 
     res.status(201).json({ success: true, message: 'Photo created successfully', data: photo });
@@ -134,6 +136,8 @@ exports.createRuralDistressPhoto = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
+
 
 // ✅ Get All Photos
 exports.getAllRuralDistressPhotos = async (req, res) => {
@@ -171,7 +175,7 @@ exports.getAllRuralDistressPhotos = async (req, res) => {
 exports.updateRuralDistressPhoto = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title } = req.body;
+    const { title, date } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: 'Invalid ID format' });
@@ -179,6 +183,7 @@ exports.updateRuralDistressPhoto = async (req, res) => {
 
     const updateData = {};
     if (title) updateData.title = title;
+    if (date) updateData.date = date;
 
     if (req.file) {
       const imageUrl = await uploadToS3(req.file);
@@ -199,6 +204,7 @@ exports.updateRuralDistressPhoto = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
 
 // ✅ Delete Photo
 exports.deleteRuralDistressPhoto = async (req, res) => {
@@ -230,12 +236,13 @@ exports.deleteRuralDistressPhoto = async (req, res) => {
 // 🔸 Create Conference
 exports.createConference = async (req, res) => {
   try {
-    const { description } = req.body;
-    if (!description) {
-      return res.status(400).json({ success: false, message: 'Description is required' });
+    const { description, date } = req.body;
+
+    if (!description || !date) {
+      return res.status(400).json({ success: false, message: 'Description and Date are required' });
     }
 
-    const conference = await RuralConference.create({ description });
+    const conference = await RuralConference.create({ description, date });
 
     res.status(201).json({
       success: true,
@@ -266,15 +273,19 @@ exports.getAllConferences = async (req, res) => {
 exports.updateConference = async (req, res) => {
   try {
     const { id } = req.params;
-    const { description } = req.body;
+    const { description, date } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: 'Invalid Conference ID' });
     }
 
+    if (!description || !date) {
+      return res.status(400).json({ success: false, message: 'Description and Date are required' });
+    }
+
     const updated = await RuralConference.findByIdAndUpdate(
       id,
-      { description },
+      { description, date },
       { new: true, runValidators: true }
     );
 
@@ -419,13 +430,13 @@ exports.deleteBook = async (req, res) => {
 // 🔸 Create Article
 exports.createRuralDistressArticle = async (req, res) => {
   try {
-    const { title, url, description } = req.body;
+    const { title, url, description, date } = req.body;
 
-    if (!title || !url) {
-      return res.status(400).json({ success: false, message: 'Title and URL are required' });
+    if (!title || !url || !date) {
+      return res.status(400).json({ success: false, message: 'Title, URL and Date are required' });
     }
 
-    const article = new RuralDistressArticle({ title, url, description });
+    const article = new RuralDistressArticle({ title, url, description, date });
     await article.save();
 
     res.status(201).json({ success: true, message: 'Article created successfully', data: article });
@@ -448,18 +459,19 @@ exports.getAllRuralDistressArticles = async (req, res) => {
 exports.updateRuralDistressArticle = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, url, description } = req.body;
+    const { title, url, description, date } = req.body;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: 'Invalid Article ID' });
     }
-    if (!title || !url) {
-      return res.status(400).json({ success: false, message: 'Title and URL are required' });
+
+    if (!title || !url || !date) {
+      return res.status(400).json({ success: false, message: 'Title, URL and Date are required' });
     }
 
     const updated = await RuralDistressArticle.findByIdAndUpdate(
       id,
-      { title, url, description },
+      { title, url, description, date },
       { new: true, runValidators: true }
     );
 
@@ -472,7 +484,6 @@ exports.updateRuralDistressArticle = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
-
 // 🔸 Delete Article
 exports.deleteRuralDistressArticle = async (req, res) => {
   try {

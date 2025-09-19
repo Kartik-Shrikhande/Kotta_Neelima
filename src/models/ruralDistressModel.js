@@ -6,7 +6,8 @@ const ruralDistressSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true
-    }
+    },
+     date: { type: String, required: true } 
   },
   { timestamps: true }
 );

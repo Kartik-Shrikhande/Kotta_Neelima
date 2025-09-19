@@ -10,7 +10,8 @@ const ruralDistressPhotoSchema = new mongoose.Schema(
     image: {
       type: String, // Full S3 URL
       required: true
-    }
+    },
+     date: { type: String, required: true } 
   },
   { timestamps: true }
 );
