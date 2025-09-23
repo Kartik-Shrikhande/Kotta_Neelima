@@ -9,6 +9,7 @@ const cookieParser = require('cookie-parser');
 
 // Route imports
 const galleryRoutes = require('./routes/galleryRoutes'); // Adjusted path
+const galleryCategoryRoutes = require('./routes/galleryCategoryRoutes'); // Adjusted path
 const adminRoutes = require('./routes/adminRoutes');     // Adjusted path
 const mediaRoutes = require('./routes/mediaRoutes');
 const pressRoutes = require('./routes/pressRoutes');
@@ -44,6 +45,7 @@ app.use(cookieParser());
 // ];
 // API Routes
 app.use('/api/admin', adminRoutes);
+app.use('/api/gallery-category', galleryCategoryRoutes);
 app.use('/api/gallery', galleryRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/press', pressRoutes);
