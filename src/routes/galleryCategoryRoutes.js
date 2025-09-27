@@ -3,10 +3,12 @@ const router = express.Router();
 const {
   createGalleryCategory,
   getGalleryCategories,
-  deleteGalleryCategory
+  deleteGalleryCategory,
+  updateGalleryCategory
 } = require('../controllers/galleryCategoryController');
 
 router.post('/create', createGalleryCategory);
+router.put('/update/:id', updateGalleryCategory); 
 router.get('/all', getGalleryCategories);
 router.delete('/delete/:id', deleteGalleryCategory);
 

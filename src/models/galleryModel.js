@@ -8,11 +8,12 @@ const gallerySchema = new mongoose.Schema(
     image: { type: String, required: true }, // S3 URL
     date: { type: String }, // e.g., "28-07-2025"
     time: { type: String }, // e.g., "12:00"
-    // category: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: 'GalleryCategory',
-    //   required: true,
-    // },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'GalleryCategory',
+      default: null,
+      // required: true,
+    },
   },
   { timestamps: true }
 );
