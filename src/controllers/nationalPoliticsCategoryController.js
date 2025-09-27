@@ -31,6 +31,42 @@ exports.getCategories = async (req, res) => {
   }
 };
 
+
+exports.updateNationalPoliticsCategory = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid Category ID" });
+    }
+
+    if (!name) {
+      return res.status(400).json({ success: false, message: "Category name is required" });
+    }
+
+    const existing = await NationalPoliticsCategory.findOne({ name, _id: { $ne: id } });
+    if (existing) {
+      return res.status(409).json({ success: false, message: "Category with this name already exists" });
+    }
+
+    const updated = await NationalPoliticsCategory.findByIdAndUpdate(
+      id,
+      { name },
+      { new: true, runValidators: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "Category not found" });
+    }
+
+    res.status(200).json({ success: true, message: "Category updated successfully", data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+};
+
+
 // Delete Category
 exports.deleteCategory = async (req, res) => {
   try {

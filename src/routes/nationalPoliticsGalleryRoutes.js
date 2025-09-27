@@ -7,6 +7,7 @@ const authenticationMiddleware = require('../middleware/authenticationMiddleware
 const {
   createCategory,
   getCategories,
+  updateNationalPoliticsCategory,
   deleteCategory
 } = require('../controllers/nationalPoliticsCategoryController');
 
@@ -24,6 +25,7 @@ router.get('/categories', getCategories);
 router.use(authenticationMiddleware.authenticateUser,authenticationMiddleware.authorizeRoles(['admin']))
 // Category Routes
 router.post('/categories', createCategory);
+router.put('/update/category/:id', updateNationalPoliticsCategory);
 router.delete('/categories/:id', deleteCategory);
 
 // Gallery Routes
