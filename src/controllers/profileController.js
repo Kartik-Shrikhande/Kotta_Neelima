@@ -21,9 +21,11 @@ const JSZip = require("jszip");
 // const bucketName = process.env.S3_BUCKET_NAME;
 
 /* ---------------------- BIO CRUD ---------------------- */
+
+// 🔸 Create Profile Bio
 exports.createProfileBio = async (req, res) => {
   try {
-    const { description, descriptionHindi, descriptionTelugu } = req.body;
+    const { description, descriptionHindi, descriptionTelugu, designation } = req.body;
     if (!description) {
       return res.status(400).json({ success: false, message: 'Description is required' });
     }
@@ -33,7 +35,14 @@ exports.createProfileBio = async (req, res) => {
       profileImage = await uploadToS3(req.file);
     }
 
-    const bio = new ProfileBio({ description, descriptionHindi, descriptionTelugu, profileImage });
+    const bio = new ProfileBio({
+      description,
+      descriptionHindi,
+      descriptionTelugu,
+      profileImage,
+      designation
+    });
+
     await bio.save();
     res.status(201).json({ success: true, message: 'Bio created successfully', data: bio });
   } catch (err) {
@@ -41,15 +50,17 @@ exports.createProfileBio = async (req, res) => {
   }
 };
 
+// 🔸 Get Latest Profile Bio
 exports.getProfileBio = async (req, res) => {
   try {
     const bio = await ProfileBio.findOne().sort({ createdAt: -1 });
-    res.status(200).json({success: true, data: bio });
+    res.status(200).json({ success: true, data: bio });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }
 };
 
+// 🔸 Update Profile Bio
 exports.updateProfileBio = async (req, res) => {
   try {
     const { id } = req.params;
@@ -57,6 +68,7 @@ exports.updateProfileBio = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Invalid Bio ID' });
 
     let updateData = { ...req.body };
+
     if (req.file) {
       const profileImage = await uploadToS3(req.file);
       updateData.profileImage = profileImage;
@@ -75,6 +87,7 @@ exports.updateProfileBio = async (req, res) => {
   }
 };
 
+// 🔸 Delete Profile Bio
 exports.deleteProfileBio = async (req, res) => {
   try {
     const { id } = req.params;
@@ -89,6 +102,7 @@ exports.deleteProfileBio = async (req, res) => {
     res.status(500).json({ success: false, error: err.message });
   }
 };
+
 
 /* ---------------------- DOWNLOAD BIO IMAGE ---------------------- */
 exports.downloadProfileBioImage = async (req, res) => {

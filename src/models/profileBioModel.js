@@ -6,6 +6,7 @@ const profileBioSchema = new mongoose.Schema(
     descriptionHindi: { type: String },
     descriptionTelugu: { type: String },
     profileImage: { type: String }, // image URL (can be S3 or manual)
+    designation: { type: String },
   },
   { timestamps: true }
 );
