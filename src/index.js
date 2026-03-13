@@ -25,6 +25,8 @@ const journalismRoutes = require('./routes/journalismRoutes');
 const ruralDistressRoutes = require('./routes/ruralDistressRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const podcastRoutes = require('./routes/podcastRoutes');
+const volunteerRoutes = require('./routes/volunteerRoutes');
+const citizenGrievanceRoutes = require('./routes/citizenGrievanceRoutes');
 // Initialize express app 
 
 
@@ -61,6 +63,8 @@ app.use('/api/journalism', journalismRoutes);
 app.use('/api/rural-distress', ruralDistressRoutes);
 app.use('/profile', profileRoutes);
 app.use('/api/podcast', podcastRoutes);
+app.use('/api/volunteer', volunteerRoutes);
+app.use('/api/grievances', citizenGrievanceRoutes);
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGODB_URL, {
